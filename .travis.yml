@@ -14,5 +14,3 @@ stages:
       - docker build -t lissenburg/lissenburg-site-client ./client
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
       - docker push lissenburg/lissenburg-site-client
-  - name: build
-    if: branch = master AND type = push
