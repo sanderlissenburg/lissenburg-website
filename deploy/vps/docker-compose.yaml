@@ -28,3 +28,4 @@ services:
 networks:
   lissenburg:
     name: lissenburg
+    driver: overlay
