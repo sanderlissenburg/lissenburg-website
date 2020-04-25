@@ -28,4 +28,3 @@ services:
 networks:
   lissenburg:
     name: lissenburg
-    driver: bridge
