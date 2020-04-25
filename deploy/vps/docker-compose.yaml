@@ -11,22 +11,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik.yaml:/etc/traefik/traefik.yml
       - ./acme.json:/acme.json
-    networks:
-      - lissenburg
 
   client:
     image: lissenburg/lissenburg-client
-    networks:
-      - lissenburg
     deploy:
       labels:
         - traefik.http.routers.lissenburg_client.rule=Host(`lissenburg.dev`)
         - traefik.enable=true
         - traefik.http.routers.lissenburg_client.tls=true
         - traefik.http.routers.lissenburg_client.tls.certresolver=lissenburg_resolver
-
-  networks:
-    lissenburg:
-      name: lissenburg
-      driver: bridge
-      scope: swarm
