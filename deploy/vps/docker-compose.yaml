@@ -25,7 +25,7 @@ services:
         - traefik.http.routers.lissenburg_client.tls=true
         - traefik.http.routers.lissenburg_client.tls.certresolver=lissenburg_resolver
 
-  networks:
-    lissenburg:
-      name: lissenburg
-      driver: bridge
+networks:
+  lissenburg:
+    name: lissenburg
+    driver: bridge
