@@ -13,3 +13,7 @@ certificatesResolvers:
       httpChallenge:
         # used during the challenge
         entryPoint: web
+
+providers:
+  docker:
+    swarmMode: true
