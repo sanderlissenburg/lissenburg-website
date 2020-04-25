@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  client:
+    image: lissenburg/lissenburg-client
+  ports:
+    - 80:80

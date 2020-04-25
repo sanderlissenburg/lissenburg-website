@@ -3,6 +3,9 @@ language: generic
 services:
   - docker
 
+before_install:
+  - openssl aes-256-cbc -K $encrypted_2054bb94132c_key -iv $encrypted_2054bb94132c_iv -in ./deploy/travis/travis_deploy_key.enc -out ./deploy/travis/travis_deploy_key -d
+
 deploy:
   provider: script
   script: bash ./deploy/vps/deploy.sh
