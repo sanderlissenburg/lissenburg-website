@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  treafik:
+  traefik:
     image: traefik:v2.0
     command: --providers.docker --providers.docker.exposedByDefault=false
     ports:
@@ -24,4 +24,4 @@ services:
         - traefik.enable=true
         - traefik.http.routers.lissenburg_client.tls=true
         - traefik.http.routers.lissenburg_client.tls.certresolver=lissenburg_resolver
-        - traefik.http.services.<lissenburg_client>.loadbalancer.server.port=80
+        - traefik.http.services.lissenburg_client.loadbalancer.server.port=80
