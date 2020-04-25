@@ -29,3 +29,4 @@ networks:
   lissenburg:
     name: lissenburg
     driver: overlay
+    attachable: true
