@@ -1,3 +1,5 @@
 .env
+.idea
 .DS_Store
 deploy/travis/travis_deploy_key
+bck_*

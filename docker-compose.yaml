@@ -10,7 +10,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - traefik
+      - proxy
 
   mysql:
     container_name: mysql
@@ -28,25 +28,26 @@ services:
   client:
     image: nginx:1.17.10-alpine
     volumes:
-      - ./client/public:/usr/share/nginx/html:ro
+      - ./client/public:/usr/share/nginx/html
     labels:
       - traefik.http.routers.lissenburg_client.rule=Host(`lissenburg.test`)
       - traefik.enable=true
     networks:
-      - traefik
+      - proxy
 
   admin_nginx:
     build:
       context: ./admin
-      dockerfile: ./docker/nginx/Dockerfile
+      dockerfile: ./docker/nginx/Dockerfile.dev
     volumes:
-      - ./admin/public:/app/public:ro
+      - ./admin/public:/app/public
     networks:
-      - traefik
+      - proxy
       - admin
     labels:
-      - traefik.http.routers.lissenburg_admin.rule=Host(`lissenburg.test`) && PathPrefix(`/admin`)
+      - traefik.http.routers.lissenburg_admin.rule=Host(`lissenburg.test`) && PathPrefix(`/admin`, `/_wdt`, `/_profiler`)
       - traefik.enable=true
+      - traefik.docker.network=proxy
 
   admin_php-fpm:
     container_name: php-fpm
@@ -59,9 +60,16 @@ services:
       - admin
       - mysql
 
+  admin_composer:
+    image: composer:1.9
+    volumes:
+      - ./admin:/app
+    networks:
+      - mysql
+
 networks:
-  traefik:
-    name: traefik
+  proxy:
+    name: proxy
     driver: bridge
   mysql:
     name: mysql
