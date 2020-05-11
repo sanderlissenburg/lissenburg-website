@@ -8,12 +8,11 @@ services:
       - '80:80'
       - '8080:8080'
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:cached
     networks:
       - proxy
 
   mysql:
-    container_name: mysql
     image: mysql:8.0.19
     command: --default-authentication-plugin=mysql_native_password
     environment:
@@ -21,14 +20,14 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql:cached
     networks:
       - mysql
 
   client:
     image: nginx:1.17.10-alpine
     volumes:
-      - ./client/public:/usr/share/nginx/html
+      - ./client/public:/usr/share/nginx/html:cached
     labels:
       - traefik.http.routers.lissenburg_client.rule=Host(`lissenburg.test`)
       - traefik.enable=true
@@ -36,29 +35,32 @@ services:
       - proxy
 
   admin_nginx:
+#    image: lissenburg/admin-nginx
     build:
       context: ./admin
       dockerfile: ./docker/nginx/Dockerfile.dev
     volumes:
-      - ./admin/public:/app/public
+      - ./admin/public:/app/public:cached
     networks:
       - proxy
       - admin
     labels:
-      - traefik.http.routers.lissenburg_admin.rule=Host(`lissenburg.test`) && PathPrefix(`/admin`, `/_wdt`, `/_profiler`)
+      - traefik.http.routers.lissenburg_admin.rule=Host(`admin.lissenburg.test`)
       - traefik.enable=true
       - traefik.docker.network=proxy
 
   admin_php-fpm:
-    container_name: php-fpm
+#    image: lissenburg/admin-php-fpm
     build:
       context: ./admin
       dockerfile: ./docker/php-fpm/Dockerfile.dev
     volumes:
-      - ./admin:/app
+      - ./admin:/app:cached
     networks:
-      - admin
-      - mysql
+      admin:
+        aliases:
+          - php-fpm
+      mysql:
 
   admin_composer:
     image: composer:1.9
