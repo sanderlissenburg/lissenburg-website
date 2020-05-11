@@ -1,9 +1,85 @@
 version: '3.7'
 
 services:
+  traefik:
+    image: traefik:v2.0
+    command: --api.insecure=true --providers.docker --providers.docker.exposedByDefault=false
+    ports:
+      - '80:80'
+      - '8080:8080'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:cached
+    networks:
+      - proxy
+
+  mysql:
+    image: mysql:8.0.19
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql:cached
+    networks:
+      - mysql
+
   client:
     image: nginx:1.17.10-alpine
-    ports:
-      - 80:80
     volumes:
-      - ./client/public:/usr/share/nginx/html:ro
+      - ./client/public:/usr/share/nginx/html:cached
+    labels:
+      - traefik.http.routers.lissenburg_client.rule=Host(`lissenburg.test`)
+      - traefik.enable=true
+    networks:
+      - proxy
+
+  admin_nginx:
+#    image: lissenburg/admin-nginx
+    build:
+      context: ./admin
+      dockerfile: ./docker/nginx/Dockerfile.dev
+    volumes:
+      - ./admin/public:/app/public:cached
+    networks:
+      - proxy
+      - admin
+    labels:
+      - traefik.http.routers.lissenburg_admin.rule=Host(`admin.lissenburg.test`)
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+
+  admin_php-fpm:
+#    image: lissenburg/admin-php-fpm
+    build:
+      context: ./admin
+      dockerfile: ./docker/php-fpm/Dockerfile.dev
+    volumes:
+      - ./admin:/app:cached
+    networks:
+      admin:
+        aliases:
+          - php-fpm
+      mysql:
+
+  admin_composer:
+    image: composer:1.9
+    volumes:
+      - ./admin:/app
+    networks:
+      - mysql
+
+networks:
+  proxy:
+    name: proxy
+    driver: bridge
+  mysql:
+    name: mysql
+    driver: bridge
+  admin:
+    name: admin
+    driver: bridge
+
+volumes:
+  mysql_data:
+    name: mysql_data

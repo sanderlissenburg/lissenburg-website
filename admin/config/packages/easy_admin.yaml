@@ -1,0 +1,32 @@
+easy_admin:
+    site_name: Lissenburg
+    design:
+      menu:
+        - label: Website
+        - Technology
+        - label: Settings
+        - User
+
+    entities:
+      Technology:
+        class: App\Entity\Technology
+      User:
+        class: App\Entity\User
+        label: User
+        form:
+          fields:
+            - email
+            - firstName
+            - lastName
+            - active
+        new:
+          fields:
+            - property: password
+              type: repeated
+              type_options:
+                type: Symfony\Component\Form\Extension\Core\Type\PasswordType
+                required: false
+                first_options:
+                  label: Password
+                second_options:
+                  label: Password again

@@ -5,8 +5,13 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 docker pull lissenburg/lissenburg-client
 
 # Build and push images to docker
-docker build -t lissenburg/lissenburg-client -f ./client/docker/Dockerfile ./client
+docker build -t lissenburg/lissenburg-client -f ./client/docker/nginx/Dockerfile ./client
 docker push lissenburg/lissenburg-client
+
+docker build -f=admin/docker/php-fpm/Dockerfile -t lissenburg/admin-php-fpm --target php-fpm ./admin
+docker build -f=admin/docker/php-fpm/Dockerfile -t lissenburg/admin-nginx --target nginx ./admin
+docker push lissenburg/admin-php-fpm
+docker push lissenburg/admin-nginx
 
 # Deploy to vps
 ssh $SSH_USER@$SSH_HOST 'mkdir -p ~/www/lissenburg/'
