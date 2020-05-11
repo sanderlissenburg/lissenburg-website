@@ -75,3 +75,7 @@ networks:
   admin:
     name: admin
     driver: bridge
+
+volumes:
+  mysql_data:
+    name: mysql_data
