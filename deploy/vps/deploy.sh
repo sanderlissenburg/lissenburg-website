@@ -8,6 +8,8 @@ docker pull lissenburg/lissenburg-client
 docker build -t lissenburg/lissenburg-client -f ./client/docker/nginx/Dockerfile ./client
 docker push lissenburg/lissenburg-client
 
+touch .env
+
 docker build -f=admin/docker/php-fpm/Dockerfile -t lissenburg/admin-php-fpm --target php-fpm ./admin
 docker build -f=admin/docker/php-fpm/Dockerfile -t lissenburg/admin-nginx --target nginx ./admin
 docker push lissenburg/admin-php-fpm
