@@ -38,8 +38,7 @@ COPY ./templates /app/templates
 COPY ./translations /app/translations
 COPY ./config /app/config
 
-ENV APP_ENV prod
-
+COPY .env /app/.env
 RUN bin/console cache:warmup
 
 FROM nginx:1.17.10-alpine as nginx
