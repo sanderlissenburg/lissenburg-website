@@ -8,7 +8,7 @@ docker pull lissenburg/lissenburg-client
 docker build -t lissenburg/lissenburg-client -f ./client/docker/nginx/Dockerfile ./client
 docker push lissenburg/lissenburg-client
 
- echo "APP_ENV=prod" > ./admin/.env
+echo "APP_ENV=prod\nDATABASE_URL=" > ./admin/.env
 
 docker build -f=admin/docker/php-fpm/Dockerfile -t lissenburg/admin-php-fpm --target php-fpm ./admin
 docker build -f=admin/docker/php-fpm/Dockerfile -t lissenburg/admin-nginx --target nginx ./admin
