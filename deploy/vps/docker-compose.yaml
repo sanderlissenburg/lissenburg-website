@@ -68,13 +68,13 @@ services:
 networks:
   proxy:
     name: proxy
-    driver: bridge
+    driver: overlay
   mysql:
     name: mysql
-    driver: bridge
+    driver: overlay
   admin:
     name: admin
-    driver: bridge
+    driver: overlay
 
 volumes:
   mysql_data:

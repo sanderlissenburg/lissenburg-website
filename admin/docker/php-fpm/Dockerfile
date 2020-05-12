@@ -39,7 +39,7 @@ COPY ./translations /app/translations
 COPY ./config /app/config
 
 COPY .env /app/.env
-RUN bin/console cache:warmup
+#RUN bin/console cache:clear
 
 FROM nginx:1.17.10-alpine as nginx
 
