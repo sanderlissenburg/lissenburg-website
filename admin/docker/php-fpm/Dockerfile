@@ -5,7 +5,7 @@ WORKDIR /app
 COPY ./composer.json /app/composer.json
 COPY ./composer.lock /app/composer.lock
 
-RUN composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress --no-suggest
+RUN composer install --no-dev --optimize-autoloader
 
 FROM node:13.13.0-alpine as build-frontend
 
@@ -40,8 +40,12 @@ COPY ./config /app/config
 
 COPY .env /app/.env
 
-RUN composer dump-autoload --optimize --classmap-authoritative --no-dev
+RUN mkdir -p \
+        var/cache \
+        var/logs \
+        var/sessions
 
+RUN chown -R www-data var
 #RUN bin/console cache:clear
 
 FROM nginx:1.17.10-alpine as nginx
