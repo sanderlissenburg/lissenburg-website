@@ -28,7 +28,7 @@ ssh $SSH_USER@$SSH_HOST 'mkdir -p ~/www/lissenburg/'
 scp -r ./deploy/vps/* $SSH_USER@$SSH_HOST:~/www/lissenburg/
 scp ./deploy/vps/.env $SSH_USER@$SSH_HOST:~/www/lissenburg/.env
 ssh $SSH_USER@$SSH_HOST 'cd ~/www/lissenburg/ && touch acme.json && chmod 600 acme.json'
-#ssh $SSH_USER@$SSH_HOST 'cd ~/www/lissenburg/ && docker exec -ti mysql mysql -u $DB_USERNAME -e "CREATE DATABASE IF NOT EXISTS $DB_DATABASE" -p$DB_PASSWORD'
 #  -c <(docker-compose config) instead of  -c docker-compose.yaml, otherwise .env vars will not be applied
 ssh $SSH_USER@$SSH_HOST 'cd ~/www/lissenburg/ && docker-compose pull && docker stack deploy -c <(docker-compose config) lissenburg'
-
+ssh $SSH_USER@$SSH_HOST 'docker run --rm --network mysql lissenburg/admin-php-fpm bin/console doctrine:database:create --if-not-exists'
+ssh $SSH_USER@$SSH_HOST 'docker run --rm --network mysql lissenburg/admin-php-fpm bin/console doctrine:m:m --no-interaction'

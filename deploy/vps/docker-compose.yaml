@@ -76,6 +76,7 @@ networks:
   mysql:
     name: mysql
     driver: overlay
+    attachable: true
   admin:
     name: admin
     driver: overlay
