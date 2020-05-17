@@ -3,6 +3,8 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
 # Pull old images to fill cache
 docker pull lissenburg/lissenburg-client
+docker pull lissenburg/admin-php-fpm
+docker pull lissenburg/admin-nginx
 
 # Build and push images to docker
 docker build -t lissenburg/lissenburg-client -f ./client/docker/nginx/Dockerfile ./client
