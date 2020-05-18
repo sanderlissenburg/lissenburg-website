@@ -19,7 +19,7 @@ final class Version20200517180547 extends AbstractMigration
 
     public function up(Schema $schema) : void
     {
-        $sql = 'INSERT INTO `user` (`email`, `roles`, `password`, `first_name`, `last_name`, `active`) VALUES (\'sanderlissenburg@gmail.com\', \'["ROLE_ADIM"]\', \'$argon2id$v=19$m=65536,t=4,p=1$B2SEoDYIOTn7xFCHRG25kA$KbkQbS3NhXgegfRNy4dXx5TXxHyi9baXDFjvMVm0i8\', \'Sander\', \'Lissenburg\', 1);';
+        $sql = 'INSERT INTO `user` (`email`, `roles`, `password`, `first_name`, `last_name`, `active`) VALUES (\'sanderlissenburg@gmail.com\', \'["ROLE_ADMIN"]\', \'$argon2id$v=19$m=65536,t=4,p=1$E6+/RhhfDBZ+fIphGFlLaw$Z9UkzJbgHhNvPTOT48wQ1jtfy/oEIoXXrD4HWje6OHA\', \'Sander\', \'Lissenburg\', 1);';
 
         $this->addSql($sql);
     }
