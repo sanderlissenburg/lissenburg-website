@@ -1,0 +1,9 @@
+FROM php:7.4-fpm-alpine
+
+WORKDIR /app
+
+RUN docker-php-ext-install \
+  pdo \
+  pdo_mysql
+
+COPY ./docker/php-fpm/php.dev.ini $PHP_INI_DIR/php.ini
