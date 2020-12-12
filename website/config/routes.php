@@ -39,6 +39,7 @@ use Psr\Container\ContainerInterface;
 return static function (Application $app, MiddlewareFactory $factory, ContainerInterface $container): void {
     $app->get('/', App\Infrastructure\Handler\HomePageHandler::class, 'home');
     $app->get('/about', App\Infrastructure\Handler\AboutPageHandler::class, 'about');
-    $app->get('/stories/{slug}', App\Infrastructure\Handler\StoryDetailHandler::class, 'story.detail');
+    $app->get('/archive', App\Infrastructure\Handler\StoryArchivePageHandler::class, 'archive');
+    $app->get('/stories/{slug}', App\Infrastructure\Handler\StoryDetailPageHandler::class, 'story.detail');
     $app->get('/api/ping', App\Infrastructure\Handler\PingHandler::class, 'api.ping');
 };

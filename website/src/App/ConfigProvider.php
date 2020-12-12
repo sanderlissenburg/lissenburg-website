@@ -8,6 +8,7 @@ use App\Application\Repository\StoryRepository;
 use App\Infrastructure\Repository\DbalStoryRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Laminas\Config\Config;
 use Laminas\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 use Psr\Container\ContainerInterface;
 
@@ -45,15 +46,22 @@ class ConfigProvider
                 Infrastructure\Handler\PingHandler::class => Infrastructure\Handler\PingHandler::class,
             ],
             'factories'  => [
-                Infrastructure\Handler\HomePageHandler::class => Infrastructure\Handler\HomePageHandlerFactory::class,
+                Infrastructure\Handler\HomePageHandler::class => ReflectionBasedAbstractFactory::class,
                 Infrastructure\Handler\AboutPageHandler::class => ReflectionBasedAbstractFactory::class,
-                Infrastructure\Handler\StoryDetailHandler::class => ReflectionBasedAbstractFactory::class,
+                Infrastructure\Handler\StoryArchivePageHandler::class => ReflectionBasedAbstractFactory::class,
+                Infrastructure\Handler\StoryDetailPageHandler::class => ReflectionBasedAbstractFactory::class,
                 StoryRepository::class => function(ContainerInterface $container) {
                     return new DbalStoryRepository($container->get(Connection::class));
                 },
-                Connection::class => function() {
+                Connection::class => function(ContainerInterface $container) {
                     $connectionParams = [
-                        'url' => 'mysql://root:secret@mysql/lissenburg_website',
+                        'url' => sprintf(
+                            'mysql://%s:%s@%s/%s',
+                            $container->get('config')['doctrine']['connection']['orm_default']['params']['user'],
+                            $container->get('config')['doctrine']['connection']['orm_default']['params']['password'],
+                            $container->get('config')['doctrine']['connection']['orm_default']['params']['host'],
+                            $container->get('config')['doctrine']['connection']['orm_default']['params']['dbname'],
+                        ),
                     ];
                     return DriverManager::getConnection($connectionParams);
                 }

@@ -10,6 +10,7 @@ use DateTime;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Types\Types;
+use Exception;
 
 final class DbalStoryRepository implements StoryRepository
 {
@@ -28,7 +29,7 @@ final class DbalStoryRepository implements StoryRepository
      * @param string $slug
      * @return Story
      * @throws \Doctrine\DBAL\Exception
-     * @throws \Exception
+     * @throws Exception
      */
     public function getBySlug(string $slug): Story
     {
@@ -44,20 +45,12 @@ final class DbalStoryRepository implements StoryRepository
         $story = $qb->execute()->fetchAssociative();
 
         if (!$story) {
-            throw new \Exception('Story not found', 404);
+            throw new Exception(sprintf('Story not found for slug %s', $slug), 404);
         }
 
-        return new Story(
-            (int) $story['id'],
-            $story['type'],
-            $story['title'],
-            $story['slug'],
-            $story['intro'],
-            $story['content'],
-            new DateTime($story['created_at']),
-            (bool) $story['active'],
-            []
-        );
+        $story['tags'] = $this->getTagsDataForStory((int) $story['id']);
+
+        return $this->dehydrateStory($story);
     }
 
     /**
@@ -67,6 +60,7 @@ final class DbalStoryRepository implements StoryRepository
      * @param bool $active
      * @return iterable
      * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     public function getPaginated(int $from = 1, int $size = 10, ?array $types = null, bool $active = true): iterable
     {
@@ -100,6 +94,46 @@ final class DbalStoryRepository implements StoryRepository
             return (int) $story['id'];
         }, $stories);
 
+        $tagsForStory = $this->getTagsDataByStory($storyIds);
+
+        foreach($stories as $story) {
+            $story['tags'] = $tagsForStory[$story['id']] ?? [];
+            yield $this->dehydrateStory($story);
+        }
+    }
+
+    /**
+     * @param array $data
+     * @return Story
+     * @throws Exception
+     */
+    private function dehydrateStory(array $data): Story
+    {
+        return new Story(
+            (int) $data['id'],
+            $data['type'],
+            $data['title'],
+            $data['slug'],
+            $data['intro'],
+            $data['content'],
+            new DateTime($data['created_at']),
+            (bool) $data['active'],
+            array_map(function($tag) {
+                return new Tag(
+                    (int) $tag['id'],
+                    $tag['label']
+                );
+            }, $data['tags'])
+        );
+    }
+
+    /**
+     * @param array $storyIds
+     * @return array
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private function getTagsDataByStory(array $storyIds): array
+    {
         $qb = $this->connection->createQueryBuilder();
 
         $qb = $qb
@@ -112,27 +146,23 @@ final class DbalStoryRepository implements StoryRepository
 
         $result = $qb->execute();
         $tags = $result->fetchAllAssociative();
-        $tagsForStory = array_reduce($tags, function ($reducer, $tag) {
-            $reducer[$tag['story_id']][] = new Tag(
-                (int) $tag['id'],
-                $tag['label']
-            );
+
+        return array_reduce($tags, function ($reducer, $tag) {
+            $reducer[$tag['story_id']][] = $tag;
 
             return $reducer;
         }, []);
+    }
 
-        foreach($stories as $story) {
-            yield new Story(
-                (int) $story['id'],
-                $story['type'],
-                $story['title'],
-                $story['slug'],
-                $story['intro'],
-                $story['content'],
-                new DateTime($story['created_at']),
-                (bool) $story['active'],
-                $tagsForStory[$story['id']] ?? []
-            );
-        }
+    /**
+     * @param int $storyId
+     * @return array
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private function getTagsDataForStory(int $storyId): array
+    {
+        $data = $this->getTagsDataByStory([$storyId]);
+
+        return $data[$storyId] ?? [];
     }
 }

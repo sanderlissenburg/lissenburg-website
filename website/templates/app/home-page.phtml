@@ -33,7 +33,7 @@
                             <?= $story->getIntro() ?>
                         </div>
                         <div class="content">
-                            <?= $story->getContent() ?>
+                            <?= \App\Application\Helper\TextTruncate::truncate($story->getContent(), 400) ?>
                         </div>
                         <a href="<?= $this->url('story.detail', ['slug' => $story->getSlug()]) ?>">Read more</a>
                     </article>

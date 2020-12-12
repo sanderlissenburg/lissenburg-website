@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-final class StoryDetailHandler implements RequestHandlerInterface
+final class StoryDetailPageHandler implements RequestHandlerInterface
 {
     /**
      * @var TemplateRendererInterface

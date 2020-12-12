@@ -23,10 +23,10 @@ $this->inlineScript()
 
         <div class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item" href="/about">
+                <a class="navbar-item" href="<?= $this->url('about') ?>">
                     About
                 </a>
-                <a class="navbar-item" href="/">
+                <a class="navbar-item" href="<?= $this->url('archive') ?>">
                     Archive
                 </a>
             </div>
@@ -39,9 +39,9 @@ $this->inlineScript()
         </div>
     </nav>
 </header>
-<section>
+<div>
     <?=$this->content?>
-</section>
+</div>
 <?=$this->inlineScript()?>
 </body>
 </html>
