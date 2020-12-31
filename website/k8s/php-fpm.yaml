@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-php-fpm-deployment
+  labels:
+    app: website
+    service: php-fpm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: website
+      service: php-fpm
+  template:
+    metadata:
+      labels:
+        app: website
+        service: php-fpm
+    spec:
+      containers:
+        - name: php-fpm
+          image: lissenburg/website-php-fpm
+          ports:
+            - containerPort: 9000
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: website-config
+                  key: db.host
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: website-secret
+                  key: db.username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: website-secret
+                  key: db.password
+            - name: DB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: website-config
+                  key: db.database
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-php-fpm-service
+  labels:
+    app: website
+    service: php-fpm
+spec:
+  selector:
+    app: website
+    service: php-fpm
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+

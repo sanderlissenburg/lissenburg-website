@@ -7,11 +7,11 @@ return [
             'orm_default' => [
                 'driverClass' => \Doctrine\DBAL\Driver\PDOMySql\Driver::class,
                 'params' => [
-                    'host'     => 'mysql',
-                    'port'     => '3306',
-                    'user'     => 'root',
-                    'password' => 'secret',
-                    'dbname'   => 'lissenburg_website',
+                    'host'     => $_ENV['DB_HOST'] ?? '127.0.0.1',
+                    'port'     => $_ENV['DB_PORT'] ?? '3306',
+                    'user'     => $_ENV['DB_USERNAME'],
+                    'password' => $_ENV['DB_PASSWORD'],
+                    'dbname'   => $_ENV['DB_DATABASE'],
                 ],
             ],
         ],

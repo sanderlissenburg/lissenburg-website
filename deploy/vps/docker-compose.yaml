@@ -34,53 +34,43 @@ services:
         constraints:
           - node.role == manager
 
-  client:
-    image: lissenburg/lissenburg-client
+  website_nginx:
+    image: lissenburg/website-nginx
     networks:
       - proxy
+      - website
     deploy:
       labels:
-        - traefik.http.routers.lissenburg_client.rule=Host(`lissenburg.dev`, `www.lissenburg.dev`)
-        - traefik.enable=true
-        - traefik.http.routers.lissenburg_client.tls=true
-        - traefik.http.routers.lissenburg_client.tls.certresolver=lissenburg_resolver
-        - traefik.http.services.lissenburg_client.loadbalancer.server.port=80
-
-  admin_nginx:
-    image: lissenburg/admin-nginx
-    networks:
-      - proxy
-      - admin
-    deploy:
-      labels:
-        - traefik.http.routers.lissenburg_admin.rule=Host(`admin.lissenburg.dev`)
+        - traefik.http.routers.lissenburg_website.rule=Host(`lissenburg.dev`)
         - traefik.enable=true
         - traefik.docker.network=proxy
-        - traefik.http.routers.lissenburg_admin.tls=true
-        - traefik.http.routers.lissenburg_admin.tls.certresolver=lissenburg_resolver
-        - traefik.http.services.lissenburg_admin.loadbalancer.server.port=80
+        - traefik.http.routers.lissenburg_website.tls=true
+        - traefik.http.routers.lissenburg_website.tls.certresolver=lissenburg_resolver
+        - traefik.http.services.lissenburg_website.loadbalancer.server.port=80
 
-  admin_php-fpm:
-    image: lissenburg/admin-php-fpm
+  website_php-fpm:
+    image: lissenburg/website-php-fpm
+    environment:
+      - DB_HOST=$DB_HOST
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_DATABASE=$DB_DATABASE
+      - FOOBAR=test
     networks:
-      admin:
+      website:
         aliases:
-          - php-fpm
+          - website-php-fpm-service
       mysql:
-
 
 networks:
   proxy:
-    name: proxy
     driver: overlay
   mysql:
-    name: mysql
     driver: overlay
     attachable: true
-  admin:
-    name: admin
+  website:
+    attachable: true
     driver: overlay
 
 volumes:
   mysql_data:
-    name: mysql_data

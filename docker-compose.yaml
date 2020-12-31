@@ -24,6 +24,11 @@ services:
     networks:
       - mysql
 
+  website_composer:
+    image: composer:2
+    volumes:
+      - ./website:/app
+
   website_nginx:
     build:
       context: ./website
@@ -38,10 +43,15 @@ services:
       - traefik.enable=true
       - traefik.docker.network=proxy
 
-  website_composer:
-    image: composer:2
-    volumes:
-      - ./website:/app
+  website_nginx_prod:
+    image: lissenburg/website-nginx
+    networks:
+      - proxy
+      - website
+    labels:
+      - traefik.http.routers.lissenburg_admin.rule=Host(`lissenburg.test`)
+      - traefik.enable=true
+      - traefik.docker.network=proxy
 
   website_php-fpm:
     build:
@@ -49,6 +59,25 @@ services:
       dockerfile: ./docker/php-fpm/Dockerfile.dev
     volumes:
       - ./website:/app
+    environment:
+      # Needed for migrations because that doesn't load the .env
+      - DB_HOST=$DB_HOST
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_DATABASE=$DB_DATABASE
+    networks:
+      website:
+        aliases:
+          - php-fpm
+      mysql:
+
+  website_php-fpm_prod:
+    image: lissenburg/website-php-fpm
+    environment:
+      - DB_HOST=$DB_HOST
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_DATABASE=$DB_DATABASE
     networks:
       website:
         aliases:

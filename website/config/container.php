@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use Laminas\ServiceManager\ServiceManager;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
 // Load configuration
 $config = require __DIR__ . '/config.php';
 

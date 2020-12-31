@@ -1,7 +1,6 @@
 const path = require('path');
 
 module.exports = {
-  watch: true,
   watchOptions: {
     ignored: ['node_modules/**'],
     poll: true
@@ -27,7 +26,8 @@ module.exports = {
         use: {
           loader: 'file-loader',
           options: {
-            name: 'webfonts/[name].[ext]',
+            name: '[name].[ext]',
+            outputPath: "../webfonts"
           },
         },
       },
