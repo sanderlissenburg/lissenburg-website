@@ -1,0 +1,67 @@
+<?php $this->headTitle('Home'); ?>
+
+<section class="hero is-link">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Hello world!
+            </h1>
+            <h2 class="subtitle">
+                Welcome to my exploration journal in the world of Computers.
+            </h2>
+        </div>
+    </div>
+</section>
+
+<div class="section">
+    <div class="container is-max-desktop">
+        <div class="columns">
+            <section class="column is-8">
+
+                <h1 class="title is-5">Long stories</h1>
+
+                <?php foreach ($this->longStories as $story): ?>
+                    <article class="pb-5">
+                        <h1 class="title is-size-1"><?= $this->escapeHtml($story->getTitle()) ?></h1>
+                        <h2 class="subtitle is-7 has-text-grey"><?= $story->getCreatedAt()->format('F j, Y') ?></h2>
+                        <div class="tags">
+                            <?php foreach ($story->getTags() as $tag): ?>
+                            <span class="tag is-info"><?= $this->escapeHtml($tag->getLabel()) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="content is-size-4">
+                            <?= $story->getIntro() ?>
+                        </div>
+                        <div class="content">
+                            <?= \App\Application\Helper\TextTruncate::truncate($story->getContent(), 400) ?>
+                        </div>
+                        <a href="<?= $this->url('story.detail', ['slug' => $story->getSlug()]) ?>">Read more</a>
+                    </article>
+                <?php endforeach; ?>
+            </section>
+
+           <section class="column">
+
+               <h1 class="title is-5">Short stories</h1>
+
+               <?php foreach ($this->shortStories as $story): ?>
+                   <article class="pb-5">
+                       <h1 class="title is-4"><?= $this->escapeHtml($story->getTitle()) ?></h1>
+                       <h2 class="subtitle is-7 has-text-grey"><?= $story->getCreatedAt()->format('F j, Y') ?></h2>
+                       <div class="tags">
+                           <?php foreach ($story->getTags() as $tag): ?>
+                               <span class="tag is-info"><?= $this->escapeHtml($tag->getLabel()) ?></span>
+                           <?php endforeach; ?>
+                       </div>
+                       <div class="content">
+                           <?= $story->getIntro() ?>
+                       </div>
+                       <a href="<?= $this->url('story.detail', ['slug' => $story->getSlug()]) ?>">Read more</a>
+                   </article>
+               <?php endforeach; ?>
+
+           </section>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,53 @@
+<?php
+$this->inlineScript()
+    ->prependFile('/js/main.js');
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <?=$this->headTitle('Lissenburg.dev')->setSeparator(' - ')->setAutoEscape(false)?>
+    <?=$this->headMeta()?>
+    <?=$this->headLink()?>
+</head>
+<body>
+<header class="container is-max-desktop">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <h1 class="title is-6">Lissenburg.dev</h1>
+            </a>
+            <a role="button" data-target="main-nav" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+
+        <div class="navbar-menu" id="main-nav">
+            <div class="navbar-start">
+                <a class="navbar-item" href="<?= $this->url('about') ?>">
+                    About
+                </a>
+                <a class="navbar-item" href="<?= $this->url('archive') ?>">
+                    Archive
+                </a>
+            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <a href="https://github.com/sanderlissenburg" target="_blank" class="icon"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/sander-lissenburg-80463210/" target="_blank" class="icon"><i class="fab fa-linkedin" ></i></a>
+                    <a href="https://www.linkedin.com/in/sander-lissenburg-80463210/" target="_blank" class="icon"><i class="fab fa-linkedin" ></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<div>
+    <?=$this->content?>
+</div>
+<?=$this->inlineScript()?>
+</body>
+</html>

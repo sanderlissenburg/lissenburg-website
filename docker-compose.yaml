@@ -1,8 +1,8 @@
-version: '3.7'
+version: '3.8'
 
 services:
   traefik:
-    image: traefik:v2.0
+    image: traefik:v2.3.3
     command: --api.insecure=true --providers.docker --providers.docker.exposedByDefault=false
     ports:
       - '80:80'
@@ -13,84 +13,90 @@ services:
       - proxy
 
   mysql:
-    image: mysql:8.0.19
+    image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3306:3306'
     environment:
       - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
-    ports:
-      - 3306:3306
     volumes:
-      - mysql_data:/var/lib/mysql:cached
+      - mysql_data:/var/lib/mysql
     networks:
       - mysql
 
-  client:
-    image: nginx:1.17.10-alpine
+  website_composer:
+    image: composer:2
     volumes:
-      - ./client/public:/usr/share/nginx/html:cached
-    labels:
-      - traefik.http.routers.lissenburg_client.rule=Host(`lissenburg.test`)
-      - traefik.enable=true
-    networks:
-      - proxy
+      - ./website:/app
 
-  admin_nginx:
-#    image: lissenburg/admin-nginx
+  website_nginx:
     build:
-      context: ./admin
+      context: ./website
       dockerfile: ./docker/nginx/Dockerfile.dev
     volumes:
-      - ./admin/public:/app/public:cached
+      - ./website/public:/app/public
     networks:
       - proxy
-      - admin
+      - website
     labels:
-      - traefik.http.routers.lissenburg_admin.rule=Host(`admin.lissenburg.test`)
+      - traefik.http.routers.lissenburg_admin.rule=Host(`lissenburg.test`)
       - traefik.enable=true
       - traefik.docker.network=proxy
 
-  admin_php-fpm:
-#    image: lissenburg/admin-php-fpm
+  website_nginx_prod:
+    image: lissenburg/website-nginx
+    networks:
+      - proxy
+      - website
+    labels:
+      - traefik.http.routers.lissenburg_admin.rule=Host(`lissenburg.test`)
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+
+  website_php-fpm:
     build:
-      context: ./admin
+      context: ./website
       dockerfile: ./docker/php-fpm/Dockerfile.dev
     volumes:
-      - ./admin:/app:cached
+      - ./website:/app
+    environment:
+      # Needed for migrations because that doesn't load the .env
+      - DB_HOST=$DB_HOST
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_DATABASE=$DB_DATABASE
     networks:
-      admin:
+      website:
         aliases:
           - php-fpm
       mysql:
 
-  admin_composer:
-    image: composer:1.9
-    volumes:
-      - ./admin:/app
+  website_php-fpm_prod:
+    image: lissenburg/website-php-fpm
+    environment:
+      - DB_HOST=$DB_HOST
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_DATABASE=$DB_DATABASE
     networks:
-      - mysql
+      website:
+        aliases:
+          - php-fpm
+      mysql:
 
-  api_node:
-    image: node:13.14.0-alpine
-    volumes:
-      - ./api:/app:cached
-    working_dir: /app
-    command: npm run watch
-    ports:
-      - 3000:3000
-    networks:
-      - mysql
-
-networks:
-  proxy:
-    name: proxy
-    driver: bridge
-  mysql:
-    name: mysql
-    driver: bridge
-  admin:
-    name: admin
-    driver: bridge
+  website_node:
+      image: node:15.2.1-alpine3.10
+      volumes:
+        - ./website:/app
+      working_dir: /app
 
 volumes:
   mysql_data:
-    name: mysql_data
+
+networks:
+  proxy:
+    driver: bridge
+  mysql:
+    driver: bridge
+  website:
+    driver: bridge

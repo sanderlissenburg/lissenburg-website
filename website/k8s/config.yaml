@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: website-config
+data:
+  db.host: website-mysql-service
+  db.database: lissenburg_website

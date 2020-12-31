@@ -1,0 +1,25 @@
+apiVersion: skaffold/v2beta10
+kind: Config
+metadata:
+  name: lissenburg-website
+build:
+  local:
+    push: false
+  artifacts:
+    - image: lissenburg/website-php-fpm
+      context: website
+      docker:
+        dockerfile: docker/Dockerfile
+        target: php-fpm
+    - image: lissenburg/website-nginx
+      context: website
+      docker:
+        dockerfile: docker/Dockerfile
+        target: nginx
+deploy:
+  kubectl:
+    manifests:
+      - website/k8s/mysql.yaml
+      - website/k8s/nginx.yaml
+      - website/k8s/php-fpm.yaml
+      - website/k8s/ingress.yaml

@@ -1,0 +1,25 @@
+<?php $this->headTitle('Stories - ' . $this->story->getTitle()); ?>
+
+<article>
+    <div class="hero is-link">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title"><?= $this->escapeHtml($this->story->getTitle()) ?></h1>
+            </div>
+        </div>
+    </div>
+    <div class="section container is-max-desktop">
+        <p class="pb-2 is-7 has-text-grey"><?= $this->story->getCreatedAt()->format('F j, Y') ?></p>
+        <div class="tags">
+            <?php foreach ($this->story->getTags() as $tag): ?>
+                <span class="tag is-info"><?= $this->escapeHtml($tag->getLabel()) ?></span>
+            <?php endforeach; ?>
+        </div>
+        <div class="content is-size-4">
+            <?= $this->story->getIntro() ?>
+        </div>
+        <div class="content">
+            <?= $this->story->getContent() ?>
+        </div>
+    </div>
+</article>
