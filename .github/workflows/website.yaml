@@ -13,9 +13,9 @@ jobs:
       - name: Create ssh key
         run: |
           mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ../private.key
-          sudo chmod 600 ../private.key
-          echo "${{ secrets.SSH_HOST }} ${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa.key
+          sudo chmod 600 ~/.ssh/id_rsa.key
+          echo "${{ SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: deploy with sh script
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
