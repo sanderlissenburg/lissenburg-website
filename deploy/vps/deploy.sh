@@ -22,7 +22,6 @@ echo "DB_PASSWORD=$DB_PASSWORD" >> ./deploy/vps/.env
 echo "DB_DATABASE=$DB_DATABASE" >> ./deploy/vps/.env
 
 ## Deploy to vps
-echo "$SSH_PRIVATE_KEY" > "$HOME/.ssh/id_rsa"
 ssh $SSH_USER@$SSH_HOST 'mkdir -p ~/www/lissenburg/'
 scp -r ./deploy/vps/* $SSH_USER@$SSH_HOST:~/www/lissenburg/
 scp ./deploy/vps/.env $SSH_USER@$SSH_HOST:~/www/lissenburg/.env
