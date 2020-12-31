@@ -13,8 +13,8 @@ jobs:
       - name: Create ssh key
         run: |
           mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa.key
-          chmod 600 ~/.ssh/id_rsa.key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: deploy with sh script
         env:
