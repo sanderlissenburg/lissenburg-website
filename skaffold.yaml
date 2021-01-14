@@ -4,7 +4,7 @@ metadata:
   name: lissenburg-website
 build:
   local:
-    push: false
+    push: true
   artifacts:
     - image: lissenburg/website-php-fpm
       context: website

@@ -4,7 +4,7 @@ metadata:
   name: lissenburg-website-ingress
 spec:
   rules:
-    - host: k8s.lissenburg.test
+    - host: k8s.lissenburg.nl
       http:
         paths:
           - path: /
