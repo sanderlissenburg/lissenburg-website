@@ -18,7 +18,7 @@
         <div class="columns">
             <section class="column is-8">
 
-                <h1 class="title is-5">Long stories</h1>
+                <h1 class="title is-5 has-text-grey">Long stories</h1>
 
                 <?php foreach ($this->longStories as $story): ?>
                     <article class="pb-5">
@@ -42,7 +42,20 @@
 
            <section class="column">
 
-               <h1 class="title is-5">Short stories</h1>
+               <h1 class="title is-5 has-text-grey">About</h1>
+
+               <article class="pb-6">
+                   <div class="pb-4">
+                       <figure class="image is-128x128">
+                           <img class="is-rounded " src="/images/me-square.jpg" alt="Sander Lissenburg">
+                       </figure>
+                   </div>
+                   <p class="title is-6">Sander Lissenburg</p>
+                   <p class="subtitle is-7">35 years</p>
+                   <p>PHP and JS software developer and engineer. Interested in "Every thing" Computer, Mathematics, Biology, Physics, History, Science Fiction, Gaming, Films and Series. Father of a son.<p>
+               </article>
+
+               <h2 class="title is-5 has-text-grey">Short stories</h2>
 
                <?php foreach ($this->shortStories as $story): ?>
                    <article class="pb-5">
