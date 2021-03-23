@@ -25,7 +25,7 @@ services:
       - mysql
 
   website_composer:
-    image: composer:2
+    image: composer:2.0
     volumes:
       - ./website:/app
 

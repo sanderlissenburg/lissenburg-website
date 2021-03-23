@@ -22,6 +22,9 @@ down:
 watch:
 	docker-compose run --rm website_node npm run watch
 
+build:
+	docker-compose build website_nginx website_php-fpm
+
 build-prod:
 	docker build -f=website/docker/Dockerfile	\
 		-t lissenburg/website-php-fpm \

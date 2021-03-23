@@ -22,7 +22,7 @@ COPY ./webpack.config.js /app/webpack.config.js
 
 RUN npm run production
 
-FROM php:7.4-fpm-alpine as php-fpm
+FROM php:8.0.3-fpm-alpine as php-fpm
 
 WORKDIR /app
 
