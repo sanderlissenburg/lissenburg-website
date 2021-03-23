@@ -5,7 +5,7 @@ WORKDIR /app
 COPY ./composer.json /app/composer.json
 COPY ./composer.lock /app/composer.lock
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 FROM node:15.2.1-alpine3.10 as build-frontend
 
