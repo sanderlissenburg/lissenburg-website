@@ -1,9 +1,0 @@
-/.phpcs-cache
-/.phpunit.result.cache
-/clover.xml
-/coveralls-upload.json
-/phpunit.xml
-/vendor/
-/node_modules
-/public/js/main.js
-/public/webfonts
