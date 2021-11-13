@@ -1,0 +1,20 @@
+{
+  "name": "lissenburg-frontend",
+  "version": "1.0.0",
+  "description": "Lissenburg frontend",
+  "main": "src/js/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-css": "npx tailwind -i src/css/styles.css -o public/css/styles.css -m"
+  },
+  "author": "sanderlissenburg@gmail.com <sanderlissenburg@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.0",
+    "live-server": "^1.2.1",
+    "postcss": "^8.3.11",
+    "postcss-cli": "^9.0.2",
+    "tailwindcss": "^2.2.19"
+  },
+  "dependencies": {}
+}
