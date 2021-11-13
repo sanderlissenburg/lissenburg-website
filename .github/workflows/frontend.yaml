@@ -13,17 +13,30 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Create ssh key
+      - name: Pull image to create cache
         run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H secrets.SSH_ENTRY_HOST >> ~/.ssh/known_hosts
-      - name: Deploy with sh script
-        env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_ID: ${{ secrets.DOCKER_ID }}
-          SSH_ENTRY_HOST: ${{ secrets.SSH_ENTRY_HOST }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
-        run: sh deploy/deploy.sh
+          docker pull lissenburg/website-frontend-nginx
+      - name: Build image
+        run: |
+          make build-prod
+      - name: Docker login
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_ID }}" --password-stdin
+      - name: Push image
+        run: |
+          docker push lissenburg/website-frontend-nginx
+      - name: Test ssh proxy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          proxy_host: ${{ secrets.SSH_PROXY_HOST }}
+          proxy_username: ${{ secrets.SSH_PROXY_USER }}
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_port: 22
+          script: |
+            docker stop lissenburg_website
+            docker pull lissenburg/website-frontend-nginx
+            docker run -d --rm -p 80:80 --name lissenburg_website lissenburg/website-frontend-nginx
